@@ -49,7 +49,7 @@
                             <td>'.$row['discount'].'%</td>
                             <td>$'.$row['payment'].'</td>
                             <td>
-                                <img id="img" src="image/'.$row['image'].'" width="40px"
+                                <img id="imgg" src="image/'.$row['image'].'" width="40px"
                                     height="40px" class="rounded-circle" alt="">
                             </td>
                             <td>
@@ -73,6 +73,7 @@
                         </div>
                         <div class="modal-body">
                             <form id="form" action="insert.php" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="id" id="id"  >
                                 <div class="mb-2">
                                     <label for="product" class="form-label">Product Name</label>
                                     <input id="product" name="pro_name" type="text" class="form-control" placeholder="Product...">
@@ -122,6 +123,7 @@
             $('#update').hide()
             $('#exampleModalLabel').text('Add Product')
             $('#form').attr('action','insert.php')
+            $('#form').trigger('reset')
         })
         $(document).on('click','#edit',function(){
             $('#save').hide()
@@ -133,15 +135,15 @@
             const pro_name=row.find('td:eq(1)').text().trim()
             const qty=row.find('td:eq(2)').text().trim()
             const price=row.find('td:eq(3)').text().trim().slice(1)
-            console.log(price);
             
-            const image=$('#img').attr('src')
-
+            const image=row.find('img').attr('src')
+            console.log(image);
+            
+            $('#id').val(id)
             $('#product').val(pro_name)
             $('#qty').val(qty)
             $('#price').val(price)
             $('#image').attr('src',image)
-              slice
         })
     })
 </script> 
