@@ -73,7 +73,7 @@
                         </div>
                         <div class="modal-body">
                             <form id="form" action="insert.php" method="post" enctype="multipart/form-data">
-                                <input type="hidden" name="id" id="id"  >
+                                <input type="hidden" name="id" id="id">
                                 <div class="mb-2">
                                     <label for="product" class="form-label">Product Name</label>
                                     <input id="product" name="pro_name" type="text" class="form-control" placeholder="Product...">
