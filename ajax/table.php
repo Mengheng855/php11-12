@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
@@ -52,7 +53,7 @@
                     <div class="modal-content">
 
                         <!-- FORM START -->
-                        <form action="" method="POST" enctype="multipart/form-data">
+                        <form action="" id="form" method="POST" enctype="multipart/form-data">
 
                             <div class="modal-header">
                                 <h5 class="modal-title">User Form</h5>
@@ -64,25 +65,23 @@
                                 <!-- Name -->
                                 <div class="mb-3">
                                     <label class="form-label">Name</label>
-                                    <input type="text" name="name" class="form-control" placeholder="Enter name"
+                                    <input type="text" name="name" id="name" class="form-control" placeholder="Enter name"
                                         required>
                                 </div>
-
                                 <!-- Gender -->
                                 <div class="mb-3">
                                     <label class="form-label">Gender</label>
-                                    <select name="gender" class="form-select" required>
+                                    <select name="gender" id="gender" class="form-select" required>
                                         <option value="" disabled selected>-- Select Gender --</option>
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
-                                        <option value="other">Other</option>
                                     </select>
                                 </div>
 
                                 <!-- Profile -->
                                 <div class="mb-3">
                                     <label class="form-label">Profile</label>
-                                    <input type="file" name="profile" class="form-control" accept="image/*" required>
+                                    <input type="file" id="profile" name="profile" class="form-control" accept="image/*" required>
                                 </div>
 
                             </div>
@@ -91,20 +90,40 @@
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                     Close
                                 </button>
-                                <button type="submit" class="btn btn-success">
+                                <button type="button" id="save" data-bs-dismiss="modal" class="btn btn-success">
                                     Save
                                 </button>
                             </div>
-
                         </form>
-                       
-
                     </div>
                 </div>
             </div>
-
         </table>
     </div>
 </body>
-
 </html>
+<script>
+    $(document).ready(function(){
+        $('#save').click(function(){
+            const name=$('#name').val()
+            const gender=$('#gender').val()
+            const profile=$('#profile')[0].files[0]
+            const formdata=new FormData()
+            formdata.append('name',name)
+            formdata.append('gender',gender)
+            formdata.append('profile',profile)
+            $.ajax({
+                url:'insert.php',
+                method:'POST',
+                data:formdata,
+                contentType:false,
+                processData:false,
+                success:function(response){
+                    alert(response)
+                    $('#form').trigger('reset')
+                }
+            })
+            
+        })
+    })
+</script>
