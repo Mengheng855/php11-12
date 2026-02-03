@@ -31,19 +31,29 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>001</td>
-                    <td>Ratana</td>
-                    <td>Male</td>
-                    <td>
-                        <img src="https://i.pinimg.com/736x/9e/c0/f8/9ec0f877571edc437f89c15c08081533.jpg" width="40px"
-                            height="40px" class="rounded-circle" alt="">
-                    </td>
-                    <td>
-                        <button class="btn btn-outline-danger">Delete</button>
-                        <button class="btn btn-outline-warning">Edit</button>
-                    </td>
-                </tr>
+                <?php 
+                    require 'conn.php';
+                    $select="SELECT * FROM tbl_student";
+                    $ex=mysqli_query($conn,$select);
+                    while($row=mysqli_fetch_assoc($ex)){
+                        echo '
+                            <tr>
+                                <td>'.$row['id'].'</td>
+                                <td>'.$row['name'].'</td>
+                                <td>'.$row['gender'].'</td>
+                                <td>
+                                    <img src="'.$row['profile'].'" width="40px"
+                                        height="40px" class="rounded-circle" alt="">
+                                </td>
+                                <td>
+                                    <button class="btn btn-outline-danger">Delete</button>
+                                    <button class="btn btn-outline-warning">Edit</button>
+                                </td>
+                            </tr>
+                        ';
+                    }
+
+                 ?>
             </tbody>
 
 
@@ -108,6 +118,7 @@
             const name=$('#name').val()
             const gender=$('#gender').val()
             const profile=$('#profile')[0].files[0]
+            const imgurl=URL.createObjectURL(profile)
             const formdata=new FormData()
             formdata.append('name',name)
             formdata.append('gender',gender)
@@ -119,7 +130,21 @@
                 contentType:false,
                 processData:false,
                 success:function(response){
-                    alert(response)
+                    $('tbody').append(`
+                        <tr>
+                            <td>${response}</td>
+                            <td>${name}</td>
+                            <td>${gender}</td>
+                            <td>
+                                <img src="${imgurl}" width="40px"
+                                    height="40px" class="rounded-circle" alt="">
+                            </td>
+                            <td>
+                                <button class="btn btn-outline-danger">Delete</button>
+                                <button class="btn btn-outline-warning">Edit</button>
+                            </td>
+                        </tr>
+                    `)
                     $('#form').trigger('reset')
                 }
             })
