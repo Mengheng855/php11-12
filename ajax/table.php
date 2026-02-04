@@ -44,7 +44,7 @@
                                         height="40px" class="rounded-circle" alt="">
                                 </td>
                                 <td>
-                                    <button class="btn btn-outline-danger">Delete</button>
+                                    <button class="btn btn-outline-danger" id="delete">Delete</button>
                                     <button id="edit" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
                                 </td>
                             </tr>
@@ -71,7 +71,7 @@
                             <div class="modal-body">
 
                                 <!-- Name -->
-                                 <input type="text" name="id" id="id">
+                                 <input type="hidden" name="id" id="id">
                                 <div class="mb-3">
                                     <label class="form-label">Name</label>
                                     <input type="text" name="name" id="name" class="form-control" placeholder="Enter name"
@@ -114,7 +114,7 @@
     </div>
 </body>
 </html>
-<script>￼
+<script>
     $(document).ready(function(){
         $('#add').click(function(){
             $('#save').show()
@@ -176,7 +176,7 @@
                 const name=$('#name').val()
                 const gender=$('#gender').val()
                 const profile=$('#profile')[0].files[0]
-                const imgurl=URL.createObjectURL(profile)
+                
                 const formdata=new FormData()
                 formdata.append('id',id)
                 formdata.append('name',name)
@@ -192,10 +192,30 @@
                         if(row.find('td:eq(0)').text().trim()==id){
                             row.find('td:eq(1)').text(name)
                             row.find('td:eq(2)').text(gender)
-                            row.find('td:eq(3) img').attr('src',imgurl)
+                            if(profile){
+                                const imgurl=URL.createObjectURL(profile)
+                                row.find('td:eq(3) img').attr('src',imgurl)
+                            }
                         }
                     }
                 })
+            })
+        })
+        $(document).on('click','#delete',function(){
+            if(!confirm("Are you sure?"))return
+            const row=$(this).closest('tr');
+            const id=row.find('td:first').text().trim()
+            let formdata=new FormData()
+            formdata.append('id',id)
+            $.ajax({
+                url:'delete.php',
+                method:'POST',
+                data:{
+                    id
+                },
+                success:function(){
+                    row.remove()
+                }
             })
         })
     })
