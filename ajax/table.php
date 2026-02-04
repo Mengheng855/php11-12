@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,11 +11,10 @@
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
-
 <body>
     <div class="container mt-4 p-4 shadow rounded-3">
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-outline-dark float-end mb-2" data-bs-toggle="modal"
+        <button id="add" type="button" class="btn btn-outline-dark float-end mb-2" data-bs-toggle="modal"
             data-bs-target="#exampleModal">
             +Add Student
         </button>
@@ -47,7 +45,7 @@
                                 </td>
                                 <td>
                                     <button class="btn btn-outline-danger">Delete</button>
-                                    <button class="btn btn-outline-warning">Edit</button>
+                                    <button id="edit" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
                                 </td>
                             </tr>
                         ';
@@ -73,6 +71,7 @@
                             <div class="modal-body">
 
                                 <!-- Name -->
+                                 <input type="text" name="id" id="id">
                                 <div class="mb-3">
                                     <label class="form-label">Name</label>
                                     <input type="text" name="name" id="name" class="form-control" placeholder="Enter name"
@@ -100,8 +99,11 @@
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                     Close
                                 </button>
-                                <button type="button" id="save" data-bs-dismiss="modal" class="btn btn-success">
+                                <button type="button" id="save" data-bs-dismiss="modal" class="btn btn-primary">
                                     Save
+                                </button>
+                                <button type="button" id="update" data-bs-dismiss="modal" class="btn btn-success">
+                                    Update
                                 </button>
                             </div>
                         </form>
@@ -112,8 +114,14 @@
     </div>
 </body>
 </html>
-<script>
+<script>￼
     $(document).ready(function(){
+        $('#add').click(function(){
+            $('#save').show()
+            $('#update').hide()
+            $('.modal-title').text('Add Student')
+            $('#form')[0].reset()
+        })
         $('#save').click(function(){
             const name=$('#name').val()
             const gender=$('#gender').val()
@@ -149,6 +157,46 @@
                 }
             })
             
+        })
+        $(document).on('click','#edit',function(){
+            $('#save').hide()
+            $('#update').show()
+            $('.modal-title').text('Update Student')
+            const row=$(this).closest('tr')
+            const id=row.find('td:eq(0)').text().trim()
+            const name=row.find('td:eq(1)').text().trim()
+            const gender=row.find('td:eq(2)').text().trim()
+            
+            $('#id').val(id)
+            $('#name').val(name)
+            $('#gender').val(gender)
+            
+            $('#update').click(function(){
+                const id=$('#id').val()
+                const name=$('#name').val()
+                const gender=$('#gender').val()
+                const profile=$('#profile')[0].files[0]
+                const imgurl=URL.createObjectURL(profile)
+                const formdata=new FormData()
+                formdata.append('id',id)
+                formdata.append('name',name)
+                formdata.append('gender',gender)
+                formdata.append('profile',profile)
+                $.ajax({
+                    url:'update.php',
+                    method:'POST',
+                    data:formdata,
+                    contentType:false,
+                    processData:false,
+                    success:function(res){
+                        if(row.find('td:eq(0)').text().trim()==id){
+                            row.find('td:eq(1)').text(name)
+                            row.find('td:eq(2)').text(gender)
+                            row.find('td:eq(3) img').attr('src',imgurl)
+                        }
+                    }
+                })
+            })
         })
     })
 </script>
